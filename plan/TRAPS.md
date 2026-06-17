@@ -10,7 +10,7 @@ Lessons learned while trying to set up a cross-platform HA K3s cluster with Dock
 
 **Cause**: k3d runs containers on a Docker bridge network (`172.18.0.0/16`). etcd peers advertise their bridge IP (`172.18.0.3:2380`), which is unreachable from other physical hosts.
 
-```
+```text
 Adding member mba=192.168.31.206:2380 to etcd cluster [k3d-server=https://172.18.0.3:2380]
                                                        ^^^^^^^^^^ unreachable from LAN
 ```
@@ -25,7 +25,7 @@ Adding member mba=192.168.31.206:2380 to etcd cluster [k3d-server=https://172.18
 
 **Cause**: Docker Desktop on Windows runs containers inside a Hyper-V WSL2 VM. `--network host` shares the VM's network namespace, not the Windows host's. The port is only reachable from within WSL2.
 
-```
+```text
 host (192.168.31.131)  ──╯  WSL2 VM (172.x.x.x)  ──✓  container (--network host)
 ```
 
@@ -37,7 +37,7 @@ host (192.168.31.131)  ──╯  WSL2 VM (172.x.x.x)  ──✓  container (--n
 
 **Symptom**: etcd fails to bind to the advertised LAN IP:
 
-```
+```text
 listen tcp 192.168.31.206:2380: bind: cannot assign requested address
 ```
 
@@ -51,7 +51,7 @@ listen tcp 192.168.31.206:2380: bind: cannot assign requested address
 
 **Symptom**: MBA/PC i7 fail to validate bootstrap token:
 
-```
+```text
 x509: certificate is valid for 10.43.0.1, 127.0.0.1, 192.168.1.3, ..., not 192.168.31.129
 ```
 
@@ -65,7 +65,7 @@ x509: certificate is valid for 10.43.0.1, 127.0.0.1, 192.168.1.3, ..., not 192.1
 
 **Symptom**: K3s server fails to start:
 
-```
+```text
 Error: cluster-cidr: [10.42.0.0/16] and node-ip: [fdc4:f303:9324::3], must share the same IP version
 ```
 
@@ -79,7 +79,7 @@ Error: cluster-cidr: [10.42.0.0/16] and node-ip: [fdc4:f303:9324::3], must share
 
 **Symptom**: K3s starts, flannel crashes:
 
-```
+```text
 Flannel exited: failed to find the interface: failed to get default interface: unable to find default route
 ```
 
@@ -93,7 +93,7 @@ Flannel exited: failed to find the interface: failed to get default interface: u
 
 **Symptom**: Bootstrap fails:
 
-```
+```text
 --initial-cluster has node=https://172.17.0.3:2380 but missing from --initial-advertise-peer-urls=https://192.168.31.131:2380
 ```
 
@@ -107,7 +107,7 @@ Flannel exited: failed to find the interface: failed to get default interface: u
 
 **Symptom**: Joining server fails:
 
-```
+```text
 critical configuration mismatched: ClusterDNSs, ClusterIPRanges
 ```
 
